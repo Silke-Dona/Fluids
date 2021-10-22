@@ -8,7 +8,7 @@ x = r*sin(phi)*cos(theta)
 y = r*cos(phi)
 z = r*sin(phi)*sin(theta)
 
-# View it.
+
 from mayavi import mlab
 s = mlab.mesh(x, y, z)
 mlab.show()
