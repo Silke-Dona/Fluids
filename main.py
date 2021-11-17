@@ -1,5 +1,6 @@
 from mayavi import mlab
 import numpy as np
+from typing import Tuple
 
 from helper import create_wind_rose, create_main_building, create_other_buildings, create_terrain_large, \
     create_terrain_detailed, create_line, create_water
@@ -8,13 +9,27 @@ dt = .016
 delay = int(dt * 1000)
 
 
+def get_intensity(index: int, d: float) -> Tuple[float, float, int]:
+    current_intensity = intensity[index]
+    factor = 70
+    right = .01 * np.sin(d * 2) * current_intensity * 0.01 * factor
+    up = -current_intensity * 0.01 * factor
+    up += 4.86 * 0.01 * factor  # To stay at center of tube (avoid sudden drop when tube is entered)
+
+    distance_to_next = np.sqrt(np.square(i_y[index - 1] - i_y[len(i_y) - 1]))
+    if distance_to_next <= d:
+        index -= 1
+
+    return right, up, index
+
+
 water = create_water()
+line, i_y, intensity = create_line()
 wind_rose = create_wind_rose()
 main_building = create_main_building()
 other_buildings = create_other_buildings()
 terrain_large = create_terrain_large()
 terrain_detailed = create_terrain_detailed()
-line = create_line()
 
 
 @mlab.animate(delay=delay)
@@ -33,6 +48,7 @@ def anim():
     v_dt = v * dt
     t = 0
     d = 0
+    index = len(intensity) - 1
     prev_i_move = (0, 0)
 
     pitch_start = line_flatten[1] - 10
@@ -44,6 +60,9 @@ def anim():
             if cam.position[1] <= line_start[1]:
                 mlab.move(right=-prev_i_move[0], up=-prev_i_move[1])
                 mlab.move(v_dt)
+                right, up, index = get_intensity(index, d)
+                mlab.move(right=right, up=up)
+                prev_i_move = (right, up)
                 d += v_dt
             else:
                 mlab.move(v_dt)
@@ -52,6 +71,7 @@ def anim():
                 cam.pitch(pitch_delta)
 
             if cam.position[1] <= line_end[1]:
+                print(d)
                 break
 
         scene.render()

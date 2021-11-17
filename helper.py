@@ -17,7 +17,6 @@ from data.vertices.water_v_x import water_v_x
 from data.vertices.water_v_y import water_v_y
 from data.vertices.water_v_z import water_v_z
 
-from data.faces.plane_f import plane_f
 from data.faces.main_building_f import main_building_f
 from data.faces.other_buildings_f import other_buildings_f
 from data.faces.terrain_detailed_f import terrain_detailed_f
@@ -61,7 +60,7 @@ def create_line():
     data = np.genfromtxt("data/csv/data.csv", delimiter=";")
     data = np.transpose(data)
     x, y, z, I, u, delta_u, U_prime = data
-    return mlab.plot3d(x, y, z, I, tube_radius=9, tube_sides=30, opacity=0.45)
+    return mlab.plot3d(x, y, z, I, tube_radius=9, tube_sides=30, opacity=0.45), y, I
 
 
 def process_obj_file_v(original: str, new_file: str, type: str, obj_name: str):
