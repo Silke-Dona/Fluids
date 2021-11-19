@@ -16,6 +16,30 @@ from data.vertices.wind_rose_v_z import wind_rose_v_z
 from data.vertices.water_v_x import water_v_x
 from data.vertices.water_v_y import water_v_y
 from data.vertices.water_v_z import water_v_z
+from data.vertices.cockpit_base_v_x import cockpit_base_v_x
+from data.vertices.cockpit_base_v_y import cockpit_base_v_y
+from data.vertices.cockpit_base_v_z import cockpit_base_v_z
+from data.vertices.cockpit0_v_x import cockpit0_v_x
+from data.vertices.cockpit0_v_y import cockpit0_v_y
+from data.vertices.cockpit0_v_z import cockpit0_v_z
+from data.vertices.cockpit1_v_x import cockpit1_v_x
+from data.vertices.cockpit1_v_y import cockpit1_v_y
+from data.vertices.cockpit1_v_z import cockpit1_v_z
+from data.vertices.cockpit2_v_x import cockpit2_v_x
+from data.vertices.cockpit2_v_y import cockpit2_v_y
+from data.vertices.cockpit2_v_z import cockpit2_v_z
+from data.vertices.cockpit3_v_x import cockpit3_v_x
+from data.vertices.cockpit3_v_y import cockpit3_v_y
+from data.vertices.cockpit3_v_z import cockpit3_v_z
+from data.vertices.cockpit4_v_x import cockpit4_v_x
+from data.vertices.cockpit4_v_y import cockpit4_v_y
+from data.vertices.cockpit4_v_z import cockpit4_v_z
+from data.vertices.cockpit5_v_x import cockpit5_v_x
+from data.vertices.cockpit5_v_y import cockpit5_v_y
+from data.vertices.cockpit5_v_z import cockpit5_v_z
+from data.vertices.cockpit6_v_x import cockpit6_v_x
+from data.vertices.cockpit6_v_y import cockpit6_v_y
+from data.vertices.cockpit6_v_z import cockpit6_v_z
 
 from data.faces.main_building_f import main_building_f
 from data.faces.other_buildings_f import other_buildings_f
@@ -23,6 +47,14 @@ from data.faces.terrain_detailed_f import terrain_detailed_f
 from data.faces.terrain_large_f import terrain_large_f
 from data.faces.wind_rose_f import wind_rose_f
 from data.faces.water_f import water_f
+from data.faces.cockpit_base_f import cockpit_base_f
+from data.faces.cockpit0_f import cockpit0_f
+from data.faces.cockpit1_f import cockpit1_f
+from data.faces.cockpit2_f import cockpit2_f
+from data.faces.cockpit3_f import cockpit3_f
+from data.faces.cockpit4_f import cockpit4_f
+from data.faces.cockpit5_f import cockpit5_f
+from data.faces.cockpit6_f import cockpit6_f
 
 from mayavi import mlab
 import numpy as np
@@ -40,12 +72,12 @@ def create_other_buildings():
 
 def create_terrain_detailed():
     return mlab.triangular_mesh(terrain_detailed_v_x, terrain_detailed_v_y, terrain_detailed_v_z, terrain_detailed_f,
-                                colormap='gist_earth') #(0.5843, 0.6471, 0.5843)
+                                colormap='gist_earth')  # (0.5843, 0.6471, 0.5843)
 
 
 def create_terrain_large():
     return mlab.triangular_mesh(terrain_large_v_x, terrain_large_v_y, terrain_large_v_z, terrain_large_f,
-                                colormap='gist_earth')  #(0.0353, 0.3216, 0.1569)
+                                colormap='gist_earth')  # (0.0353, 0.3216, 0.1569)
 
 
 def create_wind_rose():
@@ -63,17 +95,32 @@ def create_line():
     return mlab.plot3d(x, y, z, I, tube_radius=9, tube_sides=30, opacity=0.45), y, I
 
 
+def create_cockpit():
+    return mlab.triangular_mesh(cockpit_base_v_x, cockpit_base_v_y, cockpit_base_v_z, cockpit_base_f,
+                                color=(1, 1, 1)), \
+           mlab.triangular_mesh(cockpit0_v_x, cockpit0_v_y, cockpit0_v_z, cockpit0_f,
+                                color=(0, 0, 0)), \
+           mlab.triangular_mesh(cockpit1_v_x, cockpit1_v_y, cockpit1_v_z, cockpit1_f, color=(1, 1, 1)), \
+           mlab.triangular_mesh(cockpit2_v_x, cockpit2_v_y, cockpit2_v_z, cockpit2_f, color=(0, 0, 0)), \
+           mlab.triangular_mesh(cockpit3_v_x, cockpit3_v_y, cockpit3_v_z, cockpit3_f, color=(1, 1, 1)), \
+           mlab.triangular_mesh(cockpit4_v_x, cockpit4_v_y, cockpit4_v_z, cockpit4_f, color=(0, 0, 0)), \
+           mlab.triangular_mesh(cockpit5_v_x, cockpit5_v_y, cockpit5_v_z, cockpit5_f, color=(1, 1, 1)), \
+           mlab.triangular_mesh(cockpit6_v_x, cockpit6_v_y, cockpit6_v_z, cockpit6_f, color=(0, 0, 0))
+
+
 def process_obj_file_v(original: str, new_file: str, type: str, obj_name: str):
     with open(original) as original:
-        out_x = open(new_file + '_x' + f'.{type}', 'w')
+        out_x = open(new_file + '_x' + f'{type}', 'w')
         out_x.write(f'{obj_name}_x = [')
-        out_y = open(new_file + '_y' + f'.{type}', 'w')
+        out_y = open(new_file + '_y' + f'{type}', 'w')
         out_y.write(f'{obj_name}_y = [')
-        out_z = open(new_file + '_z' + f'.{type}', 'w')
+        out_z = open(new_file + '_z' + f'{type}', 'w')
         out_z.write(f'{obj_name}_z = [')
 
         new_line_counter = 0
         for line in original:
+            if line == '\n':
+                continue
             split = line.split()
             if split[0] == 'v':
                 new_line_counter += 1
@@ -96,6 +143,8 @@ def process_obj_file_f(original: str, new_file: str, type: str, obj_name: str):
             out_file.write(obj_name + ' = [\n')
 
             for line in in_file:
+                if line == '\n':
+                    continue
                 split = line.split()
                 if split[0] == 'f':
                     out_file.write('    (')
@@ -108,22 +157,36 @@ def process_obj_file_f(original: str, new_file: str, type: str, obj_name: str):
 
             out_file.write(']\n')
 
-
-
 # def main():
-    # process_obj_file_v('data/obj/wind_rose.obj', 'data/vertices/wind_rose_v', '.py', 'wind_rose_v')
-    # process_obj_file_v('data/obj/terrain_detailed.obj', 'data/vertices/terrain_detailed_v', '.py', 'terrain_detailed_v')
-    # process_obj_file_v('data/obj/terrain_large.obj', 'data/vertices/terrain_large_v', '.py', 'terrain_large_v')
-    # process_obj_file_v('data/obj/other_buildings.obj', 'data/vertices/other_buildings_v', '.py', 'other_buildings_v')
-    # process_obj_file_v('data/obj/main_building.obj', 'data/vertices/main_building_v', '.py', 'main_building_v')
-    # process_obj_file_v('data/obj/water.obj', 'data/vertices/water_v', '.py', 'water_v')
-    #
-    # process_obj_file_f('data/obj/wind_rose.obj', 'data/faces/wind_rose_f', '.py', 'wind_rose_f')
-    # process_obj_file_f('data/obj/terrain_detailed.obj', 'data/faces/terrain_detailed_f', '.py', 'terrain_detailed_f')
-    # process_obj_file_f('data/obj/terrain_large.obj', 'data/faces/terrain_large_f', '.py', 'terrain_large_f')
-    # process_obj_file_f('data/obj/other_buildings.obj', 'data/faces/other_buildings_f', '.py', 'other_buildings_f')
-    # process_obj_file_f('data/obj/main_building.obj', 'data/faces/main_building_f', '.py', 'main_building_f')
-    # process_obj_file_f('data/obj/water.obj', 'data/faces/water_f', '.py', 'water_f')
+# process_obj_file_v('data/obj/wind_rose.obj', 'data/vertices/wind_rose_v', '.py', 'wind_rose_v')
+# process_obj_file_v('data/obj/terrain_detailed.obj', 'data/vertices/terrain_detailed_v', '.py', 'terrain_detailed_v')
+# process_obj_file_v('data/obj/terrain_large.obj', 'data/vertices/terrain_large_v', '.py', 'terrain_large_v')
+# process_obj_file_v('data/obj/other_buildings.obj', 'data/vertices/other_buildings_v', '.py', 'other_buildings_v')
+# process_obj_file_v('data/obj/main_building.obj', 'data/vertices/main_building_v', '.py', 'main_building_v')
+# process_obj_file_v('data/obj/water.obj', 'data/vertices/water_v', '.py', 'water_v')
+# process_obj_file_v('data/obj/cockpit_base.obj', 'data/vertices/cockpit_base_v', '.py', 'cockpit_base_v')
+# process_obj_file_v('data/obj/cockpit0.obj', 'data/vertices/cockpit0_v', '.py', 'cockpit0_v')
+# process_obj_file_v('data/obj/cockpit1.obj', 'data/vertices/cockpit1_v', '.py', 'cockpit1_v')
+# process_obj_file_v('data/obj/cockpit2.obj', 'data/vertices/cockpit2_v', '.py', 'cockpit2_v')
+# process_obj_file_v('data/obj/cockpit3.obj', 'data/vertices/cockpit3_v', '.py', 'cockpit3_v')
+# process_obj_file_v('data/obj/cockpit4.obj', 'data/vertices/cockpit4_v', '.py', 'cockpit4_v')
+# process_obj_file_v('data/obj/cockpit5.obj', 'data/vertices/cockpit5_v', '.py', 'cockpit5_v')
+# process_obj_file_v('data/obj/cockpit6.obj', 'data/vertices/cockpit6_v', '.py', 'cockpit6_v')
+
+# process_obj_file_f('data/obj/wind_rose.obj', 'data/faces/wind_rose_f', '.py', 'wind_rose_f')
+# process_obj_file_f('data/obj/terrain_detailed.obj', 'data/faces/terrain_detailed_f', '.py', 'terrain_detailed_f')
+# process_obj_file_f('data/obj/terrain_large.obj', 'data/faces/terrain_large_f', '.py', 'terrain_large_f')
+# process_obj_file_f('data/obj/other_buildings.obj', 'data/faces/other_buildings_f', '.py', 'other_buildings_f')
+# process_obj_file_f('data/obj/main_building.obj', 'data/faces/main_building_f', '.py', 'main_building_f')
+# process_obj_file_f('data/obj/water.obj', 'data/faces/water_f', '.py', 'water_f')
+# process_obj_file_f('data/obj/cockpit_base.obj', 'data/faces/cockpit_base_f', '.py', 'cockpit_base_f')
+# process_obj_file_f('data/obj/cockpit0.obj', 'data/faces/cockpit0_f', '.py', 'cockpit0_f')
+# process_obj_file_f('data/obj/cockpit1.obj', 'data/faces/cockpit1_f', '.py', 'cockpit1_f')
+# process_obj_file_f('data/obj/cockpit2.obj', 'data/faces/cockpit2_f', '.py', 'cockpit2_f')
+# process_obj_file_f('data/obj/cockpit3.obj', 'data/faces/cockpit3_f', '.py', 'cockpit3_f')
+# process_obj_file_f('data/obj/cockpit4.obj', 'data/faces/cockpit4_f', '.py', 'cockpit4_f')
+# process_obj_file_f('data/obj/cockpit5.obj', 'data/faces/cockpit5_f', '.py', 'cockpit5_f')
+# process_obj_file_f('data/obj/cockpit6.obj', 'data/faces/cockpit6_f', '.py', 'cockpit6_f')
 
 
 # main()
